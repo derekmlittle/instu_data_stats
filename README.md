@@ -1,2 +1,3 @@
 # instu_data_stats
-Monthyl statistic graphs for White Dam monitoring
+Monthly statistic graphs for White Dam monitoring
+Python and pandas dataframe
