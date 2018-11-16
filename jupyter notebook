@@ -1,0 +1,100 @@
+import pandas as pd
+import numpy as np
+import datetime
+import dateutil
+import matplotlib.pyplot as plt
+%matplotlib inline
+from pandas import Series, DataFrame, Panel
+import csv
+pd.set_option('display.max_rows',15) # this limit maximum numbers of rows
+%pylab inline
+#load csv
+df = pd.read_csv("US_2017.csv")
+
+#read header row
+headers = list(df.columns.values)
+
+#convert Date to datetime field
+date_loc = [x.lower() for x in headers].index('date')
+df[headers[date_loc]]= pd.to_datetime(df[headers[date_loc]])
+#df.index =df[headers[date_loc]]
+
+#extract month, day and year
+df['year']=df[headers[date_loc]].dt.year
+df['month']=df[headers[date_loc]].dt.month
+df['day']=df[headers[date_loc]].dt.day
+df['hour']=df[headers[date_loc]].dt.hour
+
+#earliest and lates dates of samples
+min_year = df.year.min()
+max_year = df.year.max()
+
+summary = df.groupby(['year', 'month', 'hour']).describe()
+
+
+d = df.Date.min()
+print (d)
+print (d.hour)
+
+#resample by month
+#need logic for population months
+#write to csv?
+
+monthly_sample = df
+#monthly_sample =monthly_sample[(monthly_sample.month ==1) & (monthly_sample.hour == 15) &(monthly_sample.year == 2018)]
+#ex_stats = monthly_sample.SpCnd.describe()
+#print(ex_stats)
+#print("space")
+#print(ex_stats[2])
+
+mn = 1
+hr =15
+yr =2018
+test00 =monthly_sample[(monthly_sample.month ==mn) & (monthly_sample.hour == hr) &(monthly_sample.year == yr)].describe()
+test00
+
+#Below is a constructor for building the hourly summaries by hour dataform
+test = pd.DataFrame({'year': [], 'month': [], 'hour': [], 'mean': [], 'min': [], '25%': [], '50%': [],  '75%': [], 'max': []})
+test = test[['year', 'month', 'hour', 'mean', 'min', '25%', '50%', '75%', 'max']]
+test
+#append
+#test.append(pd.DataFrame({'year': [2018]}))
+test.loc[0]=0,1,2,3,4,5,6,7,8
+test
+#can i constrct a string to build dataframe start?
+summary.to_csv('US Summary 2017.csv')
+min_date=df.Date.min()
+max_date=df.Date.max()
+
+#automate writing a monthly statistics along with hourly statistics for each month sampled 
+#cylce through year
+#CREATE empy dataframe to add data too
+stats_df =  pd.DataFrame({'year': [], 'month': [], 'hour': [], 'mean': [], 'min': [], '25%': [], '50%': [],  '75%': [], 'max': []})
+
+#set header locations
+stats_df = stats_df[['year', 'month', 'hour', 'mean', 'min', '25%', '50%', '75%', 'max']]
+y=2018
+
+while y <= max_year:
+    m = 1 #month counter
+    while m <=max_date.month: #cylce through month
+        h = 0 #hour counter 0-24     
+        while h <= 24:  #cycle through hour
+            print (monthly_sample[(monthly_sample.month ==m) & (monthly_sample.hour == h) &(monthly_sample.year == y)].describe())
+            
+            
+            h+=1
+        m +=1      
+    y +=1
+
+   
+	 
+	 #get the headers
+headers = list(df.columns.values)
+print(headers)
+
+print(len(headers))
+#print max for each parameter
+for header in headers:
+    print(header)
+    print (df[header].max())
